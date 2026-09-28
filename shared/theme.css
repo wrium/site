@@ -1,0 +1,297 @@
+:root {
+    --bg: #fdfbf6;
+    --bg-alt: #f5ebdd;
+    --ink: #241019;
+    --ink-soft: #6b5560;
+    --plum: #7d3358;
+    --plum-deep: #5a2440;
+    --gold: #d99e1f;
+    --gold-bg: #efc24a;
+    --border: #e9dcc9;
+    --code-bg: #fbf6ec;
+    --font-display: 'Space Mono', ui-monospace, SFMono-Regular, monospace;
+    --font-body: 'Manrope', system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1b0f16;
+        --bg-alt: #26141f;
+        --ink: #f3e9e0;
+        --ink-soft: #c2a6b4;
+        --plum: #ef8fb4;
+        --plum-deep: #f5a9c6;
+        --gold: #f3ce6b;
+        --gold-bg: #7a5a1a;
+        --border: #3b2130;
+        --code-bg: #24141c;
+    }
+}
+
+/* Shiki renders code at build time with both a light and a dark theme baked
+   in as CSS variables on each token - this switches which one is visible.
+   Scoped to only the two spots that actually got the light/dark pair (docs
+   body code, hero snippet); the Todo showcase below is highlighted with a
+   single fixed dark theme on purpose and must not be touched here, or an
+   undefined --shiki-dark on it would make its text disappear. */
+@media (prefers-color-scheme: dark) {
+    .doc-content .shiki, .doc-content .shiki span,
+    .live-demo-code .shiki, .live-demo-code .shiki span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg) !important;
+    }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+}
+
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+
+a { color: var(--plum); }
+
+/* Styled by tag name, not a class - a wrium component tag's own attributes
+   all become props, so a "class" attribute here would be consumed as a
+   prop, not a real DOM class (see shared/site-header.js). */
+site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+}
+site-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+    color: var(--ink);
+}
+site-header .logo img { border-radius: 6px; }
+site-header nav { display: flex; align-items: center; gap: 28px; }
+site-header nav a { text-decoration: none; color: var(--ink-soft); font-size: 0.9rem; font-weight: 600; padding-bottom: 2px; }
+site-header nav a.active { color: var(--plum); border-bottom: 2px solid var(--plum); }
+site-header .gh-link { display: flex; align-items: center; }
+site-header .gh-link svg { width: 20px; height: 20px; fill: var(--ink-soft); }
+site-header .gh-link:hover svg { fill: var(--ink); }
+
+site-footer {
+    display: block;
+    border-top: 1px solid var(--border);
+    padding: 24px 32px;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    text-align: center;
+}
+site-footer a { color: var(--ink-soft); text-decoration: underline; }
+
+/* ---------- Docs pages ---------- */
+
+.docs-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px;
+}
+.sidebar { flex: 0 0 180px; position: sticky; top: 88px; }
+.sidebar ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.sidebar a { text-decoration: none; color: var(--ink-soft); font-size: 0.9rem; }
+.sidebar a.active { color: var(--plum); font-weight: 700; }
+.doc-content { flex: 1; min-width: 0; }
+
+.doc-content h1 { font-size: 1.9rem; }
+.doc-content h2 { font-size: 1.3rem; margin-top: 2.2em; }
+.doc-content p, .doc-content li { color: var(--ink); }
+.doc-content pre {
+    /* background/color come from Shiki's own inline styles */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+}
+.doc-content code { font-family: var(--font-display); }
+.doc-content :not(pre) > code {
+    background: var(--code-bg);
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+/* ---------- Home page ---------- */
+
+.section { padding: 88px 24px; }
+.section-inner { max-width: 880px; margin: 0 auto; }
+.section-alt { background: var(--bg-alt); }
+.eyebrow {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--plum);
+    margin-bottom: 14px;
+}
+
+.hero { padding: 72px 24px 40px; text-align: center; }
+.hero-icon { width: 96px; height: 96px; margin-bottom: 20px; }
+.hero h1 {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    margin: 0 0 14px;
+    text-wrap: balance;
+}
+.hero .tagline {
+    font-size: 1.2rem;
+    color: var(--ink-soft);
+    max-width: 540px;
+    margin: 0 auto 32px;
+    text-wrap: balance;
+}
+.hero-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+}
+.btn-primary { background: var(--plum); color: #fff; }
+.btn-primary:hover { background: var(--plum-deep); }
+.btn-secondary { background: transparent; color: var(--ink); border-color: var(--border); }
+.btn-secondary:hover { border-color: var(--plum); color: var(--plum); }
+.btn svg { width: 18px; height: 18px; }
+
+.install-cmd {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    background: var(--ink);
+    color: var(--gold-bg);
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin: 0 auto 48px;
+}
+.install-cmd .prompt { color: var(--ink-soft); user-select: none; }
+.install-cmd button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 2px 4px;
+    opacity: 0.75;
+    font-family: inherit;
+    font-size: 0.85rem;
+}
+.install-cmd button:hover { opacity: 1; }
+
+.live-demo {
+    max-width: 640px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    text-align: left;
+    background: var(--bg);
+    box-shadow: 0 12px 32px -20px rgba(36, 16, 25, 0.3);
+}
+.live-demo-bar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-alt);
+}
+.live-demo-bar span { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.live-demo-body { display: grid; grid-template-columns: 1fr 1fr; }
+.live-demo-code {
+    border-right: 1px solid var(--border);
+    overflow-x: auto;
+}
+.live-demo-code pre {
+    margin: 0;
+    padding: 20px;
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+}
+.live-demo-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 20px;
+}
+.live-demo-result .count { font-family: var(--font-display); font-size: 1.6rem; }
+.live-demo-result button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    background: var(--plum);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+.live-demo-result button:hover { background: var(--plum-deep); }
+
+.section h2 { font-size: 1.9rem; margin: 0 0 12px; text-wrap: balance; }
+.section > .section-inner > p.lede { color: var(--ink-soft); font-size: 1.05rem; max-width: 560px; margin: 0 0 48px; }
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px;
+}
+.feature-card { }
+.feature-card .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--bg-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 1.2rem;
+}
+.feature-card h3 { font-size: 1.05rem; margin: 0 0 8px; font-family: var(--font-body); font-weight: 700; }
+.feature-card p { color: var(--ink-soft); font-size: 0.92rem; margin: 0; }
+
+.stat-row { display: flex; gap: 48px; flex-wrap: wrap; }
+.stat .value { font-family: var(--font-display); font-size: 2.6rem; color: var(--plum); }
+.stat .label { color: var(--ink-soft); font-size: 0.9rem; }
+
+.code-showcase pre {
+    /* background/color come from Shiki's own inline styles (a single fixed
+       dark theme, deliberately not following the site's light/dark toggle) */
+    margin: 0;
+    padding: 28px;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+
+.final-cta { text-align: center; }
+.final-cta .btn-primary { padding: 14px 32px; font-size: 1rem; }
