@@ -1,0 +1,32 @@
+<input v-model="newTodo" @keyup.enter="addTodo" />
+<button @click="addTodo">Add</button>
+
+<ul>
+  <li v-for="todo in todos" :key="todo.id">
+    <span :class="{ done: todo.done }">{{ todo.text }}</span>
+    <button @click="removeTodo(todo.id)">×</button>
+  </li>
+</ul>
+<p>{{ remaining }} of {{ todos.length }} remaining</p>
+
+<script type="module">
+import { createApp, ref, reactive, computed } from '@wrium/wrium';
+
+createApp(() => {
+  const newTodo = ref('');
+  const todos = reactive([]);
+  const remaining = computed(() => todos.filter(t => !t.done).length);
+
+  function addTodo() {
+    if (!newTodo.value.trim()) return;
+    todos.push({ id: Date.now(), text: newTodo.value, done: false });
+    newTodo.value = '';
+  }
+  function removeTodo(id) {
+    const i = todos.findIndex(t => t.id === id);
+    if (i > -1) todos.splice(i, 1);
+  }
+
+  return { newTodo, todos, remaining, addTodo, removeTodo };
+}).mount('#app');
+</script>
