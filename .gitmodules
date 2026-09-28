@@ -1,0 +1,3 @@
+[submodule "vendor/wrium-docs"]
+	path = vendor/wrium-docs
+	url = git@github.com:wrium/docs.git
