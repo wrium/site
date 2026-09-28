@@ -1,0 +1,7 @@
+<p>Count: {{ count }}</p>
+<button @click="count.value++">Try it</button>
+
+<script type="module">
+  import { createApp, ref } from '@wrium/wrium';
+  createApp(() => ({ count: ref(0) })).mount('#app');
+</script>
