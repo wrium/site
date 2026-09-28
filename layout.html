@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{TITLE}} · Wrium</title>
+<link rel="icon" href="/icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/icon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/shared/theme.css">
+</head>
+<body>
+    <div id="app">
+        <site-header :current="'{{CURRENT}}'">{{HEADER_HTML}}</site-header>
+
+        <div class="docs-layout">
+            <aside class="sidebar">
+                <ul>
+{{SIDEBAR}}
+                </ul>
+            </aside>
+            <div class="doc-content" v-pre>
+{{CONTENT}}
+            </div>
+        </div>
+
+        <site-footer :version="'1.0.0'">{{FOOTER_HTML}}</site-footer>
+    </div>
+
+    <script type="module">
+        import { createApp } from '/vendor/wrium.es.js';
+        import { SiteHeader } from '/shared/site-header.js';
+        import { SiteFooter } from '/shared/site-footer.js';
+
+        createApp(() => ({}))
+            .component('site-header', SiteHeader)
+            .component('site-footer', SiteFooter)
+            .mount('#app');
+    </script>
+</body>
+</html>
