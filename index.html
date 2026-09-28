@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrium · Full reactivity with minimal code size</title>
+<meta name="description" content="A minimalist JavaScript library for reactive user interfaces. Declarative templates, zero dependencies, no build step.">
+<link rel="icon" href="/icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/icon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/shared/theme.css">
+</head>
+<body>
+    <div id="app">
+        <site-header :current="'home'">{{HEADER_HTML}}</site-header>
+
+        <section class="hero">
+            <img class="hero-icon" src="/icons/icon-192.png" width="96" height="96" alt="Wrium">
+            <h1>Wrium</h1>
+            <p class="tagline">Full reactivity with minimal code size.</p>
+
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="/docs/introduction.html">Get Started</a>
+                <a class="btn btn-secondary" href="https://github.com/wrium/wrium">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+                    GitHub
+                </a>
+            </div>
+
+            <div class="install-cmd">
+                <span class="prompt">$</span>
+                <span>npm install @wrium/wrium</span>
+                <button data-testid="copy-install" @click="copyInstall">{{ copied ? 'Copied!' : 'Copy' }}</button>
+            </div>
+
+            <div class="live-demo">
+                <div class="live-demo-bar"><span></span><span></span><span></span></div>
+                <div class="live-demo-body">
+                    <div class="live-demo-code" v-pre>{{HERO_CODE}}</div>
+                    <div class="live-demo-result">
+                        <span class="count" data-testid="count-display">Count: {{ count }}</span>
+                        <button data-testid="increment-button" @click="count.value++">Try it</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-alt">
+            <div class="section-inner">
+                <span class="eyebrow">Why Wrium</span>
+                <h2>Everything a template needs, nothing it doesn't</h2>
+                <p class="lede">No compiler, no virtual DOM, no build config to fight with - just reactive primitives and a template compiler that reads your HTML directly.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
+                        <h3>Zero Build Step</h3>
+                        <p>Drop a script tag into any HTML page. No bundler, no compiler, no config to write before you can start.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+                        <h3>Full Reactivity</h3>
+                        <p><code>ref</code>, <code>reactive</code>, <code>computed</code>, and <code>watchEffect</code> with automatic dependency tracking, batched on a microtask.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></div>
+                        <h3>Components</h3>
+                        <p>Share markup across pages with <code>app.component()</code> - reactive props, no build tooling required.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v4M15 2v4M6 8h12l-1 12H7L6 8Z"/></svg></div>
+                        <h3>Plugin System</h3>
+                        <p>Register your own <code>v-xxx</code> directives through the exact same registry built-ins use.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg></div>
+                        <h3>~10.9 KB</h3>
+                        <p>The entire core, minified - smaller than most single icon sets, with nothing to tree-shake.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+                        <h3>TypeScript Ready</h3>
+                        <p>Real generic <code>.d.ts</code> declarations generated from source - no hand-written types to keep in sync.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-inner">
+                <span class="eyebrow">A Complete App</span>
+                <h2>This whole Todo list is real code</h2>
+                <p class="lede">State, list rendering, computed counts, and event handling - no framework ceremony in between.</p>
+
+                <div class="code-showcase" v-pre>{{TODO_CODE}}</div>
+            </div>
+        </section>
+
+        <section class="section section-alt final-cta">
+            <div class="section-inner">
+                <span class="eyebrow">Ready When You Are</span>
+                <h2>Read the docs, ship something small</h2>
+                <p class="lede" style="margin-inline: auto;">Installation, core concepts, the full directive reference, and the plugin system - all in one place.</p>
+                <a class="btn btn-primary" href="/docs/introduction.html">Get Started →</a>
+            </div>
+        </section>
+
+        <site-footer :version="'1.0.0'">{{FOOTER_HTML}}</site-footer>
+    </div>
+
+    <script type="module">
+        import { createApp, ref } from '/vendor/wrium.es.js';
+        import { SiteHeader } from '/shared/site-header.js';
+        import { SiteFooter } from '/shared/site-footer.js';
+
+        createApp(() => {
+            const count = ref(0);
+            const copied = ref(false);
+
+            function copyInstall() {
+                navigator.clipboard?.writeText('npm install @wrium/wrium').then(() => {
+                    copied.value = true;
+                    setTimeout(() => { copied.value = false; }, 1500);
+                }).catch(() => {});
+            }
+
+            return { count, copied, copyInstall };
+        })
+            .component('site-header', SiteHeader)
+            .component('site-footer', SiteFooter)
+            .mount('#app');
+    </script>
+</body>
+</html>
