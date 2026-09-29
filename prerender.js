@@ -1,11 +1,8 @@
 import { JSDOM } from 'jsdom';
 
 // Renders a wrium component to a plain HTML string at build time, so the
-// static page ships real content instead of an empty custom-element tag
-// that only fills in once the client-side script loads and mounts. When
-// wrium mounts for real in the browser, it overwrites this markup with an
-// identical result (same component, same props) - no visible flash, no
-// layout shift, and no changes needed to wrium's own compiler.
+// static page ships full HTML content without requiring client-side
+// component execution or hydration.
 //
 // wrium's compiler reads a single global `document` (only hit here by the
 // component-expansion path itself, not by v-if/v-for, which these simple

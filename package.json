@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.js",
-    "preview": "npm run build && python3 -m http.server 4300 --directory dist"
+    "preview": "npm run build && node preview.js"
   },
   "dependencies": {
     "@wrium/wrium": "^1.0.0",

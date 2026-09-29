@@ -2,7 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{TITLE}} · Wrium</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<link rel="canonical" href="{{CANONICAL_URL}}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{TITLE}} · Wrium">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:url" content="{{CANONICAL_URL}}">
+<meta property="og:image" content="{{SITE_URL}}/icons/icon-512.png">
+<meta property="og:site_name" content="Wrium">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{TITLE}} · Wrium">
+<meta name="twitter:description" content="{{DESCRIPTION}}">
+<meta name="twitter:image" content="{{SITE_URL}}/icons/icon-512.png">
 <link rel="icon" href="/icons/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/icons/icon-96.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -11,34 +24,24 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/shared/theme.css">
+{{SCHEMA_JSON_LD}}
 </head>
 <body>
     <div id="app">
-        <site-header :current="'{{CURRENT}}'">{{HEADER_HTML}}</site-header>
+        <site-header>{{HEADER_HTML}}</site-header>
 
-        <div class="docs-layout">
-            <aside class="sidebar">
+        <main class="docs-layout">
+            <aside class="sidebar" aria-label="Documentation navigation">
                 <ul>
 {{SIDEBAR}}
                 </ul>
             </aside>
-            <div class="doc-content" v-pre>
+            <article class="doc-content" v-pre>
 {{CONTENT}}
-            </div>
-        </div>
+            </article>
+        </main>
 
-        <site-footer :version="'1.0.0'">{{FOOTER_HTML}}</site-footer>
+        <site-footer>{{FOOTER_HTML}}</site-footer>
     </div>
-
-    <script type="module">
-        import { createApp } from '/vendor/wrium.es.js';
-        import { SiteHeader } from '/shared/site-header.js';
-        import { SiteFooter } from '/shared/site-footer.js';
-
-        createApp(() => ({}))
-            .component('site-header', SiteHeader)
-            .component('site-footer', SiteFooter)
-            .mount('#app');
-    </script>
 </body>
 </html>

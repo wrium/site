@@ -10,6 +10,19 @@ import { SiteFooter } from './shared/site-footer.js';
 const root = process.cwd();
 const distDir = join(root, 'dist');
 const contentDir = join(root, 'vendor/wrium-docs');
+const SITE_URL = process.env.SITE_URL || 'https://wrium.dev';
+
+const DOC_DESCRIPTIONS = {
+    'introduction': 'Introduction to Wrium: a minimalist JavaScript library for building reactive user interfaces with zero build step.',
+    'installation': 'How to install and set up Wrium in your project via npm, CDN, or direct script tag.',
+    'core-concepts': 'Learn the core reactivity primitives in Wrium: ref, reactive, computed, and watchEffect.',
+    'directives': 'Complete reference of Wrium template directives: v-if, v-for, v-model, v-show, v-bind, and v-on.',
+    'components': 'How to create and register reusable reactive components in Wrium using app.component().',
+    'plugins': 'Extend Wrium with custom directives and hooks using its plugin architecture.',
+    'examples': 'Real-world examples and code recipes built with Wrium.',
+    'api-reference': 'Full API reference for Wrium functions, types, and compiler directives.'
+};
+
 // Resolved from node_modules via the package's own "exports" map (the
 // "import" condition), not a hardcoded path - works the same whether wrium
 // is a local sibling checkout or, as here, a real npm dependency.
@@ -60,7 +73,8 @@ mkdirSync(join(distDir, 'vendor'), { recursive: true });
 // `npm install @wrium/wrium` would resolve to.
 cpSync(wriumBundle, join(distDir, 'vendor/wrium.es.js'));
 
-cpSync(join(root, 'shared'), join(distDir, 'shared'), { recursive: true });
+mkdirSync(join(distDir, 'shared'), { recursive: true });
+cpSync(join(root, 'shared/theme.css'), join(distDir, 'shared/theme.css'));
 cpSync(join(root, 'public'), distDir, { recursive: true });
 
 // Every page's footer is identical - render it once and reuse it.
@@ -77,6 +91,7 @@ const heroCodeHtml = highlightHtml(readFileSync(join(root, 'snippets/hero-demo.h
 const todoCodeHtml = highlightHtmlDark(readFileSync(join(root, 'snippets/todo-example.html'), 'utf-8'));
 
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf-8')
+    .replaceAll('{{SITE_URL}}', SITE_URL)
     .replace('{{HEADER_HTML}}', headerHtmlByCurrent.home)
     .replace('{{FOOTER_HTML}}', footerHtml)
     .replace('{{HERO_CODE}}', heroCodeHtml)
@@ -90,23 +105,74 @@ const pages = DOC_ORDER.map(slug => {
 });
 
 const sidebarLinks = pages
-    .map(p => `<li><a href="/docs/${p.slug}.html" data-slug="${p.slug}">${p.title}</a></li>`)
+    .map(p => `<li><a href="/docs/${p.slug}" data-slug="${p.slug}">${p.title}</a></li>`)
     .join('\n');
 
 for (const page of pages) {
     let contentHtml = md.render(page.raw);
     // The docs repo's own pages link to each other as "installation.md" -
     // rewrite those to the built site's actual page paths.
-    contentHtml = contentHtml.replace(/href="([a-z0-9-]+)\.md"/g, 'href="/docs/$1.html"');
+    contentHtml = contentHtml.replace(/href="([a-z0-9-]+)\.md"/g, 'href="/docs/$1"');
 
     const sidebarHtml = sidebarLinks.replace(
         `data-slug="${page.slug}">`,
         `data-slug="${page.slug}" class="active">`
     );
 
+    const description = DOC_DESCRIPTIONS[page.slug] || `${page.title} - Official documentation for Wrium.`;
+    const canonicalUrl = `${SITE_URL}/docs/${page.slug}`;
+
+    const schemaJson = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'TechArticle',
+                '@id': `${canonicalUrl}#article`,
+                'headline': `${page.title} · Wrium Documentation`,
+                'description': description,
+                'url': canonicalUrl,
+                'isPartOf': {
+                    '@type': 'WebSite',
+                    '@id': `${SITE_URL}/#website`,
+                    'name': 'Wrium',
+                    'url': `${SITE_URL}/`
+                }
+            },
+            {
+                '@type': 'BreadcrumbList',
+                '@id': `${canonicalUrl}#breadcrumb`,
+                'itemListElement': [
+                    {
+                        '@type': 'ListItem',
+                        'position': 1,
+                        'name': 'Home',
+                        'item': `${SITE_URL}/`
+                    },
+                    {
+                        '@type': 'ListItem',
+                        'position': 2,
+                        'name': 'Docs',
+                        'item': `${SITE_URL}/docs/introduction`
+                    },
+                    {
+                        '@type': 'ListItem',
+                        'position': 3,
+                        'name': page.title,
+                        'item': canonicalUrl
+                    }
+                ]
+            }
+        ]
+    }, null, 2);
+
+    const schemaTag = `<script type="application/ld+json">\n${schemaJson}\n</script>`;
+
     const html = layout
+        .replaceAll('{{SITE_URL}}', SITE_URL)
         .replaceAll('{{TITLE}}', page.title)
-        .replaceAll('{{CURRENT}}', 'docs')
+        .replaceAll('{{DESCRIPTION}}', description)
+        .replaceAll('{{CANONICAL_URL}}', canonicalUrl)
+        .replace('{{SCHEMA_JSON_LD}}', schemaTag)
         .replace('{{HEADER_HTML}}', headerHtmlByCurrent.docs)
         .replace('{{FOOTER_HTML}}', footerHtml)
         .replace('{{SIDEBAR}}', sidebarHtml)
@@ -115,6 +181,40 @@ for (const page of pages) {
     writeFileSync(join(distDir, 'docs', `${page.slug}.html`), html);
     console.log(`built docs/${page.slug}.html`);
 }
+
+// Sitemap generation
+const today = new Date().toISOString().split('T')[0];
+const sitemapUrls = [
+    `  <url>
+    <loc>${SITE_URL}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>`,
+    ...pages.map(p => `  <url>
+    <loc>${SITE_URL}/docs/${p.slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`)
+];
+
+const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapUrls.join('\n')}
+</urlset>
+`;
+writeFileSync(join(distDir, 'sitemap.xml'), sitemapXml);
+console.log('built sitemap.xml');
+
+// Robots.txt generation
+const robotsTxt = `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
+writeFileSync(join(distDir, 'robots.txt'), robotsTxt);
+console.log('built robots.txt');
 
 console.log('built index.html');
 console.log('\nDone -> dist/');
