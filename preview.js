@@ -2,7 +2,7 @@ import { createServer } from 'http';
 import { readFileSync, statSync, existsSync } from 'fs';
 import { join, extname } from 'path';
 
-const PORT = 4300;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4300;
 const DIST = join(process.cwd(), 'dist');
 
 const MIME = {
@@ -46,6 +46,16 @@ const server = createServer((req, res) => {
 
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('404 Not Found');
+});
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`\n❌ Error: Port ${PORT} is already in use.`);
+        console.error(`💡 Tip: Run on another port using: PORT=${PORT + 1} npm run preview\n`);
+    } else {
+        console.error(err);
+    }
+    process.exit(1);
 });
 
 server.listen(PORT, () => {
