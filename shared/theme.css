@@ -44,15 +44,25 @@
 
 * { box-sizing: border-box; }
 
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
     font-family: var(--font-body);
     color: var(--ink);
     background: var(--bg);
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
-h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+    overflow-wrap: break-word;
+}
 
 a { color: var(--plum); }
 
@@ -117,6 +127,8 @@ site-footer a { color: var(--ink-soft); text-decoration: underline; }
 .doc-content h1 { font-size: 1.9rem; }
 .doc-content h2 { font-size: 1.3rem; margin-top: 2.2em; }
 .doc-content p, .doc-content li { color: var(--ink); }
+.doc-content ul, .doc-content ol { padding-left: 24px; }
+.doc-content li { margin-bottom: 6px; }
 .doc-content pre {
     /* background/color come from Shiki's own inline styles */
     border: 1px solid var(--border);
@@ -124,12 +136,110 @@ site-footer a { color: var(--ink-soft); text-decoration: underline; }
     padding: 16px;
     overflow-x: auto;
     font-size: 0.85rem;
+    -webkit-overflow-scrolling: touch;
 }
 .doc-content code { font-family: var(--font-display); }
 .doc-content :not(pre) > code {
     background: var(--code-bg);
     padding: 2px 5px;
     border-radius: 4px;
+    overflow-wrap: break-word;
+}
+
+/* ---------- Tables ---------- */
+.table-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 24px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    box-sizing: border-box;
+}
+.table-container table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 0;
+    text-align: left;
+}
+.table-container th,
+.table-container td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+}
+.table-container th:last-child,
+.table-container td:last-child {
+    border-right: none;
+}
+.table-container tr:last-child td {
+    border-bottom: none;
+}
+.table-container th {
+    background: var(--bg-alt);
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--plum);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.table-container tr:nth-child(even) td {
+    background: rgba(0, 0, 0, 0.015);
+}
+@media (prefers-color-scheme: dark) {
+    .table-container tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.02);
+    }
+}
+
+/* ---------- Docs Pagination ---------- */
+.doc-pagination {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+.doc-pagination-link {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    background: var(--bg);
+    transition: border-color 0.15s, background-color 0.15s;
+    min-width: 140px;
+    max-width: 48%;
+}
+.doc-pagination-link:hover {
+    border-color: var(--plum);
+    background: var(--bg-alt);
+}
+.doc-pagination-link.next {
+    margin-left: auto;
+    text-align: right;
+}
+.doc-pagination-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+}
+.doc-pagination-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--plum);
 }
 
 /* ---------- Home page ---------- */
@@ -295,3 +405,281 @@ site-footer a { color: var(--ink-soft); text-decoration: underline; }
 
 .final-cta { text-align: center; }
 .final-cta .btn-primary { padding: 14px 32px; font-size: 1rem; }
+
+/* ---------- Responsive Styles ---------- */
+
+/* Docs Tablet & Mobile (<= 768px) */
+@media (max-width: 768px) {
+    .docs-layout {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 16px 40px;
+        box-sizing: border-box;
+        overflow-x: clip;
+    }
+    .sidebar {
+        flex: none;
+        width: calc(100% + 32px);
+        margin: 0 -16px;
+        position: sticky;
+        top: 53px;
+        background: var(--bg);
+        z-index: 8;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 4px 16px -8px rgba(36, 16, 25, 0.08);
+    }
+    .sidebar ul {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 8px;
+        padding: 4px 16px;
+        margin: 0;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        scroll-padding: 0 16px;
+    }
+    .sidebar ul::-webkit-scrollbar {
+        display: none;
+    }
+    .sidebar ul::after {
+        content: '';
+        flex: 0 0 16px;
+        width: 16px;
+    }
+    .sidebar li {
+        flex-shrink: 0;
+    }
+    .sidebar a {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 9999px;
+        background: var(--bg-alt);
+        color: var(--ink-soft);
+        font-size: 0.84rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        transition: all 0.15s ease;
+        scroll-margin: 0 16px;
+    }
+    .sidebar a:hover {
+        border-color: var(--plum);
+        color: var(--plum);
+    }
+    .sidebar a.active {
+        background: var(--plum);
+        color: var(--bg);
+        border-color: var(--plum);
+        font-weight: 700;
+        box-shadow: 0 2px 6px -2px rgba(125, 51, 88, 0.35);
+    }
+    .doc-content {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+    .doc-content h1 {
+        font-size: clamp(1.6rem, 6vw, 2.1rem);
+        margin-top: 10px;
+        margin-bottom: 14px;
+    }
+    .doc-content h2 {
+        font-size: clamp(1.2rem, 4.5vw, 1.45rem);
+        margin-top: 1.8em;
+    }
+    .doc-content ul,
+    .doc-content ol {
+        padding-left: 20px;
+    }
+    .doc-content pre {
+        padding: 12px 14px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Live Demo Responsive (<= 680px) */
+@media (max-width: 680px) {
+    .live-demo {
+        border-radius: 12px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .live-demo-body {
+        grid-template-columns: 1fr;
+    }
+    .live-demo-code {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .live-demo-code pre {
+        padding: 14px 16px;
+        font-size: 0.8rem;
+        line-height: 1.6;
+    }
+    .live-demo-result {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 20px;
+        background: var(--bg-alt);
+        gap: 12px;
+    }
+    .live-demo-result .count {
+        font-size: 1.25rem;
+    }
+    .live-demo-result button {
+        padding: 8px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile Screens (<= 640px) */
+@media (max-width: 640px) {
+    site-header {
+        padding: 12px 16px;
+    }
+    site-header nav {
+        gap: 16px;
+    }
+    site-header nav a {
+        font-size: 0.88rem;
+        padding: 4px 2px;
+    }
+    site-header .logo {
+        font-size: 1rem;
+    }
+    site-header .logo img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .hero {
+        padding: 42px 16px 28px;
+    }
+    .hero-icon {
+        width: 76px;
+        height: 76px;
+        margin-bottom: 16px;
+    }
+    .hero h1 {
+        font-size: clamp(2rem, 8vw, 2.7rem);
+        margin-bottom: 10px;
+    }
+    .hero .tagline {
+        font-size: 1.05rem;
+        margin-bottom: 24px;
+    }
+    .hero-actions {
+        gap: 10px;
+        margin-bottom: 24px;
+    }
+    .hero-actions .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .install-cmd {
+        display: flex;
+        width: 100%;
+        max-width: 340px;
+        font-size: 0.82rem;
+        padding: 10px 14px;
+        gap: 8px;
+        margin-bottom: 36px;
+    }
+    .install-cmd span:nth-child(2) {
+        white-space: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        flex: 1;
+        min-width: 0;
+    }
+    .install-cmd span:nth-child(2)::-webkit-scrollbar {
+        display: none;
+    }
+    .install-cmd button {
+        flex-shrink: 0;
+        min-width: 52px;
+        text-align: right;
+    }
+
+    .section {
+        padding: 48px 16px;
+    }
+    .eyebrow {
+        font-size: 0.72rem;
+        margin-bottom: 10px;
+    }
+    .section h2 {
+        font-size: clamp(1.4rem, 6vw, 1.8rem);
+        margin-bottom: 10px;
+    }
+    .section > .section-inner > p.lede {
+        font-size: 0.95rem;
+        margin-bottom: 28px;
+    }
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .code-showcase pre {
+        padding: 14px 16px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        line-height: 1.6;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .final-cta .btn-primary {
+        padding: 12px 24px;
+        font-size: 0.92rem;
+    }
+
+    site-footer {
+        padding: 20px 16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Extra Small Screens (<= 360px) */
+@media (max-width: 360px) {
+    site-header {
+        padding: 10px 12px;
+    }
+    site-header nav {
+        gap: 12px;
+    }
+    site-header nav a {
+        font-size: 0.82rem;
+    }
+    .hero {
+        padding: 32px 12px 24px;
+    }
+    .hero-actions .btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    .install-cmd {
+        font-size: 0.75rem;
+        padding: 8px 10px;
+        gap: 6px;
+    }
+    .live-demo-result {
+        padding: 12px 14px;
+    }
+    .live-demo-result .count {
+        font-size: 1.1rem;
+    }
+    .live-demo-result button {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+    }
+}
