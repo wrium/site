@@ -108,11 +108,32 @@ const sidebarLinks = pages
     .map(p => `<li><a href="/docs/${p.slug}" data-slug="${p.slug}">${p.title}</a></li>`)
     .join('\n');
 
-for (const page of pages) {
+for (let i = 0; i < pages.length; i++) {
+    const page = pages[i];
+    const prevPage = i > 0 ? pages[i - 1] : null;
+    const nextPage = i < pages.length - 1 ? pages[i + 1] : null;
+
     let contentHtml = md.render(page.raw);
     // The docs repo's own pages link to each other as "installation.md" -
     // rewrite those to the built site's actual page paths.
     contentHtml = contentHtml.replace(/href="([a-z0-9-]+)\.md"/g, 'href="/docs/$1"');
+    contentHtml = contentHtml
+        .replace(/<table>/g, '<div class="table-container"><table>')
+        .replace(/<\/table>/g, '</table></div>');
+
+    const paginationHtml = `
+<nav class="doc-pagination" aria-label="Documentation pagination">
+    ${prevPage ? `<a class="doc-pagination-link prev" href="/docs/${prevPage.slug}">
+        <span class="doc-pagination-label">← Previous</span>
+        <span class="doc-pagination-title">${prevPage.title}</span>
+    </a>` : '<div></div>'}
+    ${nextPage ? `<a class="doc-pagination-link next" href="/docs/${nextPage.slug}">
+        <span class="doc-pagination-label">Next →</span>
+        <span class="doc-pagination-title">${nextPage.title}</span>
+    </a>` : '<div></div>'}
+</nav>`;
+
+    contentHtml += paginationHtml;
 
     const sidebarHtml = sidebarLinks.replace(
         `data-slug="${page.slug}">`,
