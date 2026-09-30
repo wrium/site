@@ -43,5 +43,17 @@
 
         <site-footer>{{FOOTER_HTML}}</site-footer>
     </div>
+    <script>
+        const activeNav = document.querySelector('.sidebar a.active');
+        if (activeNav) {
+            const ul = activeNav.closest('ul');
+            const li = activeNav.closest('li');
+            if (ul && li) {
+                ul.scrollLeft = Math.max(0, li.offsetLeft + li.offsetWidth / 2 - ul.clientWidth / 2);
+            } else {
+                activeNav.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'instant' });
+            }
+        }
+    </script>
 </body>
 </html>
